@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
  * Custom hook to manage localStorage with React state.
  * @template T
  * @param {string} key - The key to store the value under in localStorage.
- * @param {T} initialValue - The initial value to use if the key is not found in localStorage.
+ * @param {T} defaultValue - The default value to use if the key is not found in localStorage.
  * @returns {{ value: T, setValue: React.Dispatch<React.SetStateAction<T>>, removeItem: () => void }}
  */
 
@@ -16,17 +16,17 @@ interface UseLocalStorageReturn<T> {
 
 const useLocalStorage = <T>(
   key: string,
-  initialValue: T
+  defaultValue: T
 ): UseLocalStorageReturn<T> => {
   const getStoredValue = useCallback((): T => {
     try {
       const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
+      return item ? JSON.parse(item) : defaultValue;
     } catch (error) {
       console.error(`Error getting localStorage key "${key}":`, error);
-      return initialValue;
+      return defaultValue;
     }
-  }, [key, initialValue]);
+  }, [key, defaultValue]);
 
   const [storedValue, setStoredValue] = useState<T>(getStoredValue);
 
@@ -44,7 +44,7 @@ const useLocalStorage = <T>(
     } catch (error) {
       console.error(`Error removing localStorage key "${key}":`, error);
     }
-  }, [key, initialValue]);
+  }, [key, defaultValue]);
 
   return {
     value: storedValue,
